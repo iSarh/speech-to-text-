@@ -1,0 +1,162 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Speech To Text </title>
+    
+    <style>
+        body{background-color:#D9D2D5 }
+        .container{
+            text-align: center;
+            margin-top: 100px;  
+        }
+        
+        textarea{
+            width: 500px;
+            height: 250px;
+            resize: none;
+            font-size: 16px;
+            padding: 10px 15px;
+            border: 2px solid  #8C1C03;
+                
+        }
+        
+        button{
+            margin-top: 15px;
+            color: #8C1C03;
+            border:  2px solid #BF6F6F;
+            background-color: #BF6F6F;
+            font-size: 16px;
+        }
+        
+        #confd{
+            margin-top: 10px;
+        }
+        
+        #countryLang{
+            display: none;  
+        }
+    
+    </style>
+    </head>
+    
+<body>
+    <div class="container">
+        <h1 style="color: #8C1C03"> Speech To Text</h1>
+        <textarea id="output"></textarea><br>
+        <button id="start">Start</button>
+        <button id="stop">Stop</button>
+        <select id="country"></select>
+        <select id="countryLang"></select>
+        <div id="confd"></div>
+    </div>
+    
+    <script>
+        var  output = document.getElementById("output");
+        var  start = document.getElementById("start");
+        var  stop = document.getElementById("stop");
+        var  country = document.getElementById("country");
+        var  countryLang = document.getElementById("countryLang");
+        var  confd = document.getElementById("confd");
+        
+        //use web speech api - array-
+        var  speechRecognition = speechRecognition || webkitSpeechRecognition;
+        var recognizer = new speechRecognition();
+        
+        //get languges by api
+        var langList = [                
+            ['Arabic',   ['ar-EG', 'Egypt'],
+             ['ar-JO', 'Jordan'],
+             ['ar-KW', 'Kuwait'],
+             ['ar-LB', 'Lebanon'],
+             ['ar-QA', 'Qatar'],
+             ['ar-AE', 'UAE'],
+             ['ar-MA', 'Morocco'],
+             ['ar-IQ', 'Iraq'],
+             ['ar-DZ', 'Algeria'],
+             ['ar-BH', 'Bahrain'],
+             ['ar-LY', 'Lybia'],
+             ['ar-OM', 'Oman'],
+             ['ar-SA', 'Saudi Arabia'],
+             ['ar-TN', 'Tunisia'],
+             ['ar-YE', 'Yemen']],
+
+            ['English',         ['en-AU', 'Australia'],
+             ['en-CA', 'Canada'],
+             ['en-IN', 'India'],
+             ['en-KE', 'Kenya'],
+             ['en-TZ', 'Tanzania'],
+             ['en-GH', 'Ghana'],
+             ['en-NZ', 'New Zealand'],
+             ['en-NG', 'Nigeria'],
+             ['en-ZA', 'South Africa'],
+             ['en-PH', 'Philippines'],
+             ['en-GB', 'United Kingdom'],
+             ['en-US', 'United States']]
+        ];
+        
+        // Default language 
+        recognizer.lang = "ar-SA";
+        
+        // create a list to select a language 
+        for(var i=0; i< langList.length; i++){
+            //console.log(langList[i][0]);
+            var countryList = countryList + '<option value="'+i+'" > '+langList[i][0]+' </option>';
+        }
+        country.innerHTML = countryList;
+        //specify lang
+        country.onchange = function(){
+            var countryVal = country.value;
+            //give the array variable to get data " langlist"
+            var selectCount = langList[countryVal];
+            
+            if(selectCount.length <= 2){
+                var countryLanglist = countryLanglist + '<option value="'+selectCount[1][0]+'">'+selectCount[0]+'</option>';
+            } else{
+                for(var j=1; j<selectCount.length; j++){
+                var countryLanglist = countryLanglist + '<option value="'+selectCount[i][0]+'">'+selectCount[j][1]+'</option>';     
+                }
+            }
+            
+            countryLang.innerHTML = countryLanglist;
+            countryLang.style.display = "inline-block";
+            recognizer.lang = countryLang.value;   
+        }
+        
+        //set value for lang 
+        countryLang.onchange = function() {
+            // get the value and assign to the " recognizer.lang " on selecting 
+            recognizer.lang = countryLang.value;  
+        }
+        
+        // set controls
+        start.onclick = function(){ 
+            recognizer.start();
+        }
+        
+        stop.onclick = function(){ 
+            recognizer.stop();
+        }
+        
+        //when the recognizing start
+        recognizer.onstart = function(){
+            confd.innerHTML = " Listing... " + "Please Speak"    
+        }
+        
+        recognizer.onspeechend = function(){
+            stop.click();
+        }
+        recognizer.onresult = function(event){
+            var outText = event.results[0][0].transcript;
+            var confidence = event.results[0][0].confidence*100;
+            output.value = outText;
+            confd.innerHTML = "Confidence: " + Math.round(confidence) + "%" ;
+            
+        }
+        
+        
+    </script>
+    
+    
+    </body>
+</html>
