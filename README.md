@@ -41,9 +41,11 @@ when the recognition begins; you will see "Listing... Please Speak"
 <img src="image/Picture6.jpg" width="800" >
 
 
-now it converts your speech to text :
+now it converts your speech to text
 
 <p float="left">
   <img src="image/Picture7.jpg" width="400" / >
   <img src="image/Picture8.jpg" width="400" / >
 </p>
+
+page link : http://127.0.0.1:59649/index.html
